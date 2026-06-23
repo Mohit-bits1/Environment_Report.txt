@@ -8,11 +8,8 @@ Step 1: Create Files and Establish Hard and Symbolic Links
 Command executed:
 echo "Main Project Plan" > plan.txt && ln plan.txt hard_link.txt && ln -s plan.txt sym_link.txt
 
-Expected Output:
-(Commands execute silently without screen outputs)
-
-Explanation:
-I generated a base text file named 'plan.txt' and then initialized two types of filesystem pointers: a hard link named 'hard_link.txt' and a symbolic link named 'sym_link.txt'. I observed that the shell processed the linking allocations silently, indicating proper creation.
+Observation:
+I initiated a data tracking file called 'plan.txt' and assigned alternative pointer definitions to it. The system ran the hard and soft linking allocations silently without any interface warnings, showing the allocation blocks were bound correctly.
 
 ------------------------------------------------------------------------
 Step 2: Investigate Inode Numbers and Metadata
@@ -20,13 +17,13 @@ Step 2: Investigate Inode Numbers and Metadata
 Command executed:
 ls -li plan.txt hard_link.txt sym_link.txt
 
-Expected Output (Example layout - your exact inode numbers will vary):
-12345678 -rw-r--r--  2 mohitpunia  staff  18 Jun 23 22:05 hard_link.txt
-12345678 -rw-r--r--  2 mohitpunia  staff  18 Jun 23 22:05 plan.txt
-87654321 lrwxr-xr-x  1 mohitpunia  staff   8 Jun 23 22:05 sym_link.txt -> plan.txt
+Expected Output:
+121537076 -rw-r--r--  2 mohitpunia  staff  18 23 Jun 22:04 hard_link.txt
+121537076 -rw-r--r--  2 mohitpunia  staff  18 23 Jun 22:04 plan.txt
+121537192 lrwxr-xr-x  1 mohitpunia  staff   8 23 Jun 22:04 sym_link.txt -> plan.txt
 
-Explanation:
-I executed 'ls -li' to pull up the system's absolute index node (inode) values for all three configurations. I observed that 'plan.txt' and 'hard_link.txt' share the exact same inode number and incremented link count (2), while 'sym_link.txt' has a completely unique inode number and references the source filename.
+Observation:
+I inspected index node addresses using 'ls -li'. I discovered that 'plan.txt' and 'hard_link.txt' share index tracking block '121537076' with a link reference tally of 2, establishing that they both map to identical storage space. Conversely, 'sym_link.txt' sits on separate block '121537192' and only acts as a clear-text pathname pointer.
 
 ------------------------------------------------------------------------
 Step 3: Simulate Original File Deletion and Evaluate Behavior
@@ -37,8 +34,8 @@ rm plan.txt && cat hard_link.txt
 Expected Output:
 Main Project Plan
 
-Explanation:
-I deleted the base data master source file using 'rm' and immediately read the hard link file via 'cat'. I observed that 'hard_link.txt' still successfully opens and prints the data because the underlying filesystem inode data block remains active as long as at least one hard link references it.
+Observation:
+I removed the primary master filename 'plan.txt' and attempted to access the hard link string. I observed that 'hard_link.txt' stays fully functional, outputting the content perfectly because the kernel retains the storage space as long as at least one active pointer link ties to inode 121537076.
 
 ------------------------------------------------------------------------
 Step 4: Analyze Symbolic Link Status After Deletion
@@ -49,12 +46,12 @@ cat sym_link.txt
 Expected Output:
 cat: sym_link.txt: No such file or directory
 
-Explanation:
-I attempted to view the contents of the symbolic pointer using 'cat' after the source file's destruction. I observed that the system returns a 'No such file or directory' error, confirming that the symbolic link is broken and points to a dead path name.
+Observation:
+I tried accessing the soft/symbolic connection link following the initial file removal. The command failed, returning a path warning because its reference target destination string ('plan.txt') no longer points to a valid destination inside the directory structure.
 
 ------------------------------------------------------------------------
 Step 5: Conclusions & Summary of Findings
 ------------------------------------------------------------------------
 Comparison Matrix:
-* Hard Link: Shares the identical inode with the source; functions as a direct replica mirror; retains data accessibility even if the initial parent file handle is removed.
-* Symbolic Link: Holds an individual inode that merely contains a text path string pointing to the source file; fails completely ("broken link") once the master target path is destroyed.
+* Hard Link: References the exact same inode. It is structurally immune to the source path deletion.
+* Symbolic Link: A lightweight shorthand path alias. It breaks immediately into a dead link if the file it names is unlinked.
