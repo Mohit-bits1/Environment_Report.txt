@@ -1,0 +1,77 @@
+========================================================================
+LINUX/UNIX ENVIRONMENT VERIFICATION REPORT
+========================================================================
+
+------------------------------------------------------------------------
+Step 1: Check Username and Associated Groups
+------------------------------------------------------------------------
+Command executed:
+whoami && groups
+
+Expected Output:
+mohitpunia
+staff everyone localaccounts _appserverusr admin _appserveradm _lpadmin com.apple.sharepoint.group.1 _appstore _lpoperator _developer _analyticsusers com.apple.access_ftp com.apple.access_screensharing com.apple.access_ssh com.apple.access_remote_ae
+
+Explanation:
+I executed 'whoami' to verify my current active user account identity and chained it with 'groups' to view the security group memberships. The terminal output confirms that my active user identifier is 'mohitpunia' and lists its corresponding administrative and system privilege levels.
+
+------------------------------------------------------------------------
+Step 2: Check Current Shell Being Used
+------------------------------------------------------------------------
+Command executed:
+echo $SHELL
+
+Expected Output:
+/bin/zsh
+
+Explanation:
+I printed the evaluation of the '$SHELL' environment variable to check which command interpreter interface is serving my terminal session. The system output confirms that the environment is currently operating under the Zsh (Z Shell) framework.
+
+------------------------------------------------------------------------
+Step 3: Check Current Working Directory
+------------------------------------------------------------------------
+Command executed:
+pwd
+
+Expected Output:
+/Users/mohitpunia
+
+Explanation:
+I issued the 'pwd' (print working directory) command to track down the absolute filesystem path of my active workspace environment. The resulting output points directly to the primary home directory designated for my user profile.
+
+------------------------------------------------------------------------
+Step 4: List Files and Directories in Workspace
+------------------------------------------------------------------------
+Command executed:
+ls -la
+
+Expected Output:
+total 96
+drwxr-x---+  36 mohitpunia  staff    1152 Jun 22 22:54 .
+drwxr-xr-x     5 root        admin     160 Jan 26 14:34 ..
+drwx------@   10 mohitpunia  staff     320 May 13 21:24 Desktop
+drwx------@    7 mohitpunia  staff     224 May 22 15:49 Documents
+drwx------+ 199 mohitpunia  staff    6368 May 18 09:33 Downloads
+drwxr-xr-x     7 mohitpunia  staff     224 Jul 27  2025 my-discord-bot
+
+Explanation:
+I invoked the 'ls' utility matching flags '-la' to generate a complete overview of the directory contents, including metadata and hidden reference files. The execution returned a thorough structural map detailing user directories, custom repositories, and file system permissions.
+
+------------------------------------------------------------------------
+Step 5: Verify Network Connectivity
+------------------------------------------------------------------------
+Command executed:
+ping -c 3 8.8.8.8
+
+Expected Output:
+PING 8.8.8.8 (8.8.8.8): 56 data bytes
+64 bytes from 8.8.8.8: icmp_seq=0 ttl=112 time=39.918 ms
+64 bytes from 8.8.8.8: icmp_seq=1 ttl=112 time=34.299 ms
+64 bytes from 8.8.8.8: icmp_seq=2 ttl=112 time=30.738 ms
+
+--- 8.8.8.8 ping statistics ---
+3 packets transmitted, 3 packets received, 0.0% packet loss
+round-trip min/avg/max/stddev = 30.738/34.985/39.918/3.779 ms
+
+Explanation:
+I used the 'ping' command restricted to a packet count of 3 via the '-c 3' option to target Google's public DNS IP address. The successful transmission logs stable round-trip delivery statistics and registers an explicit 0.0% packet loss, verifying full internet connectivity.
