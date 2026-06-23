@@ -1,0 +1,57 @@
+========================================================================
+SECURE PROJECT WORKSPACE SETUP REPORT
+========================================================================
+
+------------------------------------------------------------------------
+Step 1: Check Default Umask Value
+------------------------------------------------------------------------
+Command executed:
+umask
+
+Expected Output (Based on macOS default):
+0022
+
+Explanation:
+I executed the 'umask' command to discover the default permission mask applied to newly created files and directories. The output '0022' means that new directories are automatically given a '755' permission set, allowing full access to the owner but restricting write access for group members and others.
+
+------------------------------------------------------------------------
+Step 2: Create Project Directories & Check Initial Permissions
+------------------------------------------------------------------------
+Command executed:
+mkdir -p secure_project/docs && ls -ld secure_project
+
+Expected Output:
+drwxr-xr-x  3 mohitpunia  staff  96 Jun 23 21:50 secure_project
+
+Explanation:
+I used 'mkdir -p' to build a nested project folder workspace and checked its properties using 'ls -ld'. I observed that the initial default permissions allowed any user or group member on the system to read and execute files within this project zone.
+
+------------------------------------------------------------------------
+Step 3: Modify Permissions for Restricted Access
+------------------------------------------------------------------------
+Command executed:
+chmod 700 secure_project
+
+Expected Output:
+(No output, command executes silently)
+
+Explanation:
+I invoked the 'chmod 700' command to lock down the directory structure completely, stripping away all access privileges from group members and external users. I observed that the shell processed the command silently without throwing any structural configuration errors.
+
+------------------------------------------------------------------------
+Step 4: Verify Final Security Permissions and Ownership
+------------------------------------------------------------------------
+Command executed:
+ls -ld secure_project
+
+Expected Output:
+drwx------  3 mohitpunia  staff  96 Jun 23 21:50 secure_project
+
+Explanation:
+I ran the detailed listing command on the directory a final time to confirm the modifications took effect. I observed that permissions changed successfully to 'drwx------', showing that 'mohitpunia' has total read, write, and execute control while ensuring absolute isolation from the rest of the system.
+
+------------------------------------------------------------------------
+Step 5: Conceptual Analysis - Data Protection Summary
+------------------------------------------------------------------------
+Explanation of how permissions protect project data:
+By changing the permission scheme from '755' to '700', we effectively blocked anyone other than the explicit owner from accessing the workspace. Even if another local account attempts to map out or read data from 'secure_project/docs', the kernel will block them with a 'Permission Denied' exception, preventing sensitive project files from accidental exposure or unauthorized alterations.
