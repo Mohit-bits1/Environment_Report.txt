@@ -1,0 +1,46 @@
+========================================================================
+FILE ACCESS AND I/O INVESTIGATION REPORT
+========================================================================
+
+------------------------------------------------------------------------
+1. Tracking Open Files & Shell Descriptors
+------------------------------------------------------------------------
+Command executed:
+lsof -p $$
+
+Expected Output (Truncated view of active terminal entries):
+zsh     11042 mohitpunia    0u   CHR   16,0   0t4067       843 /dev/ttys000
+zsh     11042 mohitpunia    1u   CHR   16,0   0t4067       843 /dev/ttys000
+zsh     11042 mohitpunia    2u   CHR   16,0   0t4067       843 /dev/ttys000
+
+Observation:
+I targeted process ID 11042 using 'lsof' to trace descriptor management behavior. I noted that entries '0u', '1u', and '2u' link directly to character device path '/dev/ttys000', proving that my active session maps standard inputs, outputs, and terminal errors natively across the exact same duplex interface channel.
+
+------------------------------------------------------------------------
+2. Isolating Data and Error Streams (Redirection Testing)
+------------------------------------------------------------------------
+Command executed:
+echo "System log entry" > normal_output.log
+ls non_existent_file.txt 2> error_output.log
+
+Observation:
+I ran an intentional stream split sequence to separate processing information logs from environment warnings. The terminal process remained quiet because the standard output data (descriptor 1) and error outputs (descriptor 2) were completely captured and forced away into distinct text logging paths.
+
+------------------------------------------------------------------------
+3. Checking Open File Resource Limits
+------------------------------------------------------------------------
+Command executed:
+ulimit -n
+
+Expected Output:
+256
+
+Observation:
+I evaluated concurrent descriptor access bounds using the 'ulimit' utility. The system returned a strict capacity limit of 256 files, demonstrating the boundary constraints operating systems impose per application process loop to safe-keep kernel table space.
+
+------------------------------------------------------------------------
+4. Technical Breakdown: How the Kernel Manages File I/O
+------------------------------------------------------------------------
+When application routines issue calls to check local system elements, the kernel serves back an organic tracking integer called a File Descriptor. This acts as an indexed entry pointer mapping directly into the active system-wide file descriptor table. 
+
+By segregating standard communication streams into distinct numbers—0 for incoming input tracking, 1 for standard data out feeds, and 2 for error logging diagnostics—the Unix platform makes it possible to pipe application problems to standalone error logs natively without breaking core user read processes.
